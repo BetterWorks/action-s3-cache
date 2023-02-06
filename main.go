@@ -25,6 +25,7 @@ func main() {
 		if len(action.Artifacts[0]) <= 0 {
 			log.Fatal("No artifacts patterns provided")
 		}
+		log.Print("putting files")
 
 		if err := Zip(action.Key, action.Artifacts, action.RelativePath); err != nil {
 			log.Fatal(err)

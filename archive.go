@@ -20,12 +20,14 @@ func Zip(filename string, artifacts []string, relativePath bool) error {
 	defer archive.Close()
 
 	for _, pattern := range artifacts {
+		log.Printf("Finding files with pattern: %s", pattern)
 		matches, err := filepath.Glob(pattern)
 		if err != nil {
 			return err
 		}
 
 		for _, match := range matches {
+			log.Printf("copying file that matched match: %s", match)
 			filepath.Walk(match, func(path string, info os.FileInfo, err error) error {
 				header, err := zip.FileInfoHeader(info)
 				if err != nil {
