@@ -35,7 +35,7 @@ func main() {
 			log.Fatal(err)
 		}
 	case GetAction:
-		exists, err := ObjectExists(action.Key, action.Bucket)
+		exists, err := ObjectExists(fmt.Sprintf("%s%s", action.S3Prefix, action.Key), action.Bucket)
 		if err != nil {
 			log.Fatal(err)
 		}

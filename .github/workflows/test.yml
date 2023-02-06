@@ -84,6 +84,10 @@ jobs:
         shell: bash
         run: rm -rf temp
 
+      - name: Remove /tmp/thedir folder
+        shell: bash
+        run: rm -rf /tmp/thedir
+
       - name: Get cache
         id: get-cache
         uses: ./
