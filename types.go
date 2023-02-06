@@ -17,10 +17,12 @@ const (
 type (
 	// Action - Input params
 	Action struct {
-		Action    string
-		Bucket    string
-		S3Class   string
-		Key       string
-		Artifacts []string
+		Action       string
+		Bucket       string
+		S3Class      string
+		S3Prefix     string
+		Key          string
+		RelativePath bool
+		Artifacts    []string
 	}
 )

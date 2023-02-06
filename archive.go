@@ -9,7 +9,7 @@ import (
 )
 
 // Zip - Create .zip file and add dirs and files that match glob patterns
-func Zip(filename string, artifacts []string) error {
+func Zip(filename string, artifacts []string, relativePath bool) error {
 	outFile, err := os.Create(filename)
 	if err != nil {
 		return err
@@ -62,7 +62,7 @@ func Zip(filename string, artifacts []string) error {
 }
 
 // Unzip - Unzip all files and directories inside .zip file
-func Unzip(filename string) error {
+func Unzip(filename string, relativePath bool) error {
 	reader, err := zip.OpenReader(filename)
 	if err != nil {
 		return err

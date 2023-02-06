@@ -4,16 +4,20 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 )
 
 func main() {
+	relativePath, _ := strconv.ParseBool(os.Getenv("IS_RELATIVE_PATH"))
 	action := Action{
-		Action:    os.Getenv("ACTION"),
-		Bucket:    os.Getenv("BUCKET"),
-		S3Class:   os.Getenv("S3_CLASS"),
-		Key:       fmt.Sprintf("%s.zip", os.Getenv("KEY")),
-		Artifacts: strings.Split(strings.TrimSpace(os.Getenv("ARTIFACTS")), "\n"),
+		Action:       os.Getenv("ACTION"),
+		Bucket:       os.Getenv("BUCKET"),
+		S3Class:      os.Getenv("S3_CLASS"),
+		S3Prefix:     os.Getenv("S3_PREFIX"),
+		Key:          fmt.Sprintf("%s.zip", os.Getenv("KEY")),
+		RelativePath: relativePath,
+		Artifacts:    strings.Split(strings.TrimSpace(os.Getenv("ARTIFACTS")), "\n"),
 	}
 
 	switch act := action.Action; act {
@@ -22,11 +26,11 @@ func main() {
 			log.Fatal("No artifacts patterns provided")
 		}
 
-		if err := Zip(action.Key, action.Artifacts); err != nil {
+		if err := Zip(action.Key, action.Artifacts, action.RelativePath); err != nil {
 			log.Fatal(err)
 		}
 
-		if err := PutObject(action.Key, action.Bucket, action.S3Class); err != nil {
+		if err := PutObject(fmt.Sprintf("%s%s", action.S3Prefix, action.Key), action.Bucket, action.S3Class); err != nil {
 			log.Fatal(err)
 		}
 	case GetAction:
@@ -37,18 +41,18 @@ func main() {
 
 		// Get and and unzip if object exists
 		if exists {
-			if err := GetObject(action.Key, action.Bucket); err != nil {
+			if err := GetObject(fmt.Sprintf("%s%s", action.S3Prefix, action.Key), action.Bucket); err != nil {
 				log.Fatal(err)
 			}
 
-			if err := Unzip(action.Key); err != nil {
+			if err := Unzip(action.Key, action.RelativePath); err != nil {
 				log.Fatal(err)
 			}
 		} else {
 			log.Printf("No caches found for the following key: %s", action.Key)
 		}
 	case DeleteAction:
-		if err := DeleteObject(action.Key, action.Bucket); err != nil {
+		if err := DeleteObject(fmt.Sprintf("%s%s", action.S3Prefix, action.Key), action.Bucket); err != nil {
 			log.Fatal(err)
 		}
 	default:
