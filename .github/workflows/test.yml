@@ -125,24 +125,24 @@ jobs:
         shell: bash
         run: ls /tmp/thedir
 
-      # - name: Delete cache
-      #   uses: ./
-      #   with:
-      #     action: delete
-      #     aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
-      #     aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
-      #     aws-region: us-east-1
-      #     s3-prefix: "test-cache/"
-      #     bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
-      #     key: ${{ hashFiles('action.yml') }}-${{ matrix.os }}
+      - name: Delete cache
+        uses: ./
+        with:
+          action: delete
+          aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
+          aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
+          aws-region: us-east-1
+          s3-prefix: "test-cache/"
+          bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
+          key: ${{ hashFiles('action.yml') }}-${{ matrix.os }}
 
-      # - name: Delete full dir cache
-      #   uses: ./
-      #   with:
-      #     action: delete
-      #     aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
-      #     aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
-      #     aws-region: us-east-1
-      #     s3-prefix: "test-cache/"
-      #     bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
-      #     key: ${{ hashFiles('action.yml') }}-full-${{ matrix.os }}
+      - name: Delete full dir cache
+        uses: ./
+        with:
+          action: delete
+          aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
+          aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
+          aws-region: us-east-1
+          s3-prefix: "test-cache/"
+          bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
+          key: ${{ hashFiles('action.yml') }}-full-${{ matrix.os }}
