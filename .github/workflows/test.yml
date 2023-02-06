@@ -49,7 +49,7 @@ jobs:
         run: |
           mkdir -p /tmp/{fulldir1,fulldir2,fulldir3}/{fullsubdir1,fullsubdir2,fullsubdir3}
           echo "full fileexample" > /tmp/fullfile.txt
-          cat /tmp/fullfile.txt | tee /tmp/fulldir1/fullfile.txt /tmp/fulldir2/fullfile.txt /tmp/fulldir3/fullfile.txt /tmp/dir1/fullsubdir1/fullfile.txt /tmp/dir2/fullsubdir2/fullfile.txt /tmp/dir3/fullsubdir3/fullfile.txt
+          cat /tmp/fullfile.txt | tee /tmp/fulldir1/fullfile.txt /tmp/fulldir2/fullfile.txt /tmp/fulldir3/fullfile.txt /tmp/fulldir1/fullsubdir1/fullfile.txt /tmp/fulldir2/fullsubdir2/fullfile.txt /tmp/fulldir3/fullsubdir3/fullfile.txt
 
       - name: Put cache
         uses: ./
