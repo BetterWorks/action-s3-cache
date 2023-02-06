@@ -59,6 +59,8 @@ jobs:
           aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
           aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
           aws-region: us-east-1
+          verbose-logs: "true"
+          s3-prefix: "test-cache/"
           bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
           key: cache-test-${{ hashFiles('action.yml') }}-${{ matrix.os }}
           artifacts: |
@@ -71,6 +73,8 @@ jobs:
           aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
           aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
           aws-region: us-east-1
+          verbose-logs: "true"
+          s3-prefix: "test-cache/"
           bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
           key: cache-test-${{ hashFiles('action.yml') }}-full-${{ matrix.os }}
           artifacts: |
@@ -88,6 +92,8 @@ jobs:
           aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
           aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
           aws-region: us-east-1
+          verbose-logs: "true"
+          s3-prefix: "test-cache/"
           bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
           key: cache-test-${{ hashFiles('action.yml') }}-${{ matrix.os }}
 
@@ -100,6 +106,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
           aws-region: us-east-1
           bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
+          verbose-logs: "true"
+          s3-prefix: "test-cache/"
           key: cache-test-${{ hashFiles('action.yml') }}-full-${{ matrix.os }}
 
       - name: Print folder stuff
@@ -124,6 +132,7 @@ jobs:
           aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
           aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
           aws-region: us-east-1
+          s3-prefix: "test-cache/"
           bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
           key: ${{ hashFiles('action.yml') }}-${{ matrix.os }}
 
@@ -134,5 +143,6 @@ jobs:
           aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
           aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
           aws-region: us-east-1
+          s3-prefix: "test-cache/"
           bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
           key: ${{ hashFiles('action.yml') }}-full-${{ matrix.os }}
