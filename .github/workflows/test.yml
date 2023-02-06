@@ -48,9 +48,9 @@ jobs:
       - name: Create temp files outside of work dir
         shell: bash
         run: |
-          mkdir -p /tmp/{fulldir1,fulldir2,fulldir3}/{fullsubdir1,fullsubdir2,fullsubdir3}
+          mkdir -p /tmp/thedir/{fulldir1,fulldir2,fulldir3}/{fullsubdir1,fullsubdir2,fullsubdir3}
           echo "full fileexample" > /tmp/fullfile.txt
-          cat /tmp/fullfile.txt | tee /tmp/fulldir1/fullfile.txt /tmp/fulldir2/fullfile.txt /tmp/fulldir3/fullfile.txt /tmp/fulldir1/fullsubdir1/fullfile.txt /tmp/fulldir2/fullsubdir2/fullfile.txt /tmp/fulldir3/fullsubdir3/fullfile.txt
+          cat /tmp/fullfile.txt | tee /tmp/thedir/fulldir1/fullfile.txt /tmp/thedir/fulldir2/fullfile.txt /tmp/thedir/fulldir3/fullfile.txt /tmp/thedir/fulldir1/fullsubdir1/fullfile.txt /tmp/thedir/fulldir2/fullsubdir2/fullfile.txt /tmp/thedir/fulldir3/fullsubdir3/fullfile.txt
 
       - name: Put cache
         uses: ./
@@ -74,7 +74,7 @@ jobs:
           bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
           key: cache-test-${{ hashFiles('action.yml') }}-full-${{ matrix.os }}
           artifacts: |
-            /tmp/*
+            /tmp/thedir/*
 
       - name: Remove temp folder
         shell: bash
@@ -112,6 +112,10 @@ jobs:
       - name: List cache folder
         shell: bash
         run: ls temp
+
+      - name: List full path cache folder
+        shell: bash
+        run: ls /tmp/thedir
 
       - name: Delete cache
         uses: ./
