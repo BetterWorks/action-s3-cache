@@ -31,7 +31,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		if err := PutObject(fmt.Sprintf("%s%s", action.S3Prefix, action.Key), action.Bucket, action.S3Class); err != nil {
+		if err := PutObject(action.Key, fmt.Sprintf("%s%s", action.S3Prefix, action.Key), action.Bucket, action.S3Class); err != nil {
 			log.Fatal(err)
 		}
 	case GetAction:
@@ -42,7 +42,7 @@ func main() {
 
 		// Get and and unzip if object exists
 		if exists {
-			if err := GetObject(fmt.Sprintf("%s%s", action.S3Prefix, action.Key), action.Bucket); err != nil {
+			if err := GetObject(action.Key, fmt.Sprintf("%s%s", action.S3Prefix, action.Key), action.Bucket); err != nil {
 				log.Fatal(err)
 			}
 
