@@ -12,11 +12,11 @@ import (
 )
 
 // PutObject - Upload object to s3 bucket
-func PutObject(key, bucket, s3Class string) error {
+func PutObject(fileName, key, bucket, s3Class string) error {
 	session := session.Must(session.NewSession())
 	uploader := s3manager.NewUploader(session)
 
-	file, err := os.Open(key)
+	file, err := os.Open(fileName)
 	if err != nil {
 		return err
 	}
@@ -36,11 +36,11 @@ func PutObject(key, bucket, s3Class string) error {
 }
 
 // GetObject - Get object from s3 bucket
-func GetObject(key, bucket string) error {
+func GetObject(fileName, key, bucket string) error {
 	session := session.Must(session.NewSession())
 	downloader := s3manager.NewDownloader(session)
 
-	file, err := os.Create(key)
+	file, err := os.Create(fileName)
 	if err != nil {
 		return err
 	}

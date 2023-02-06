@@ -1,16 +1,13 @@
 name: Test
 on:
-  push:
-    tags-ignore:
-      - "*.*"
-    branches:
-      - "**"
+  pull_request:
 
 jobs:
   test_on_machine:
     name: Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-20.04, macos-latest, windows-2019]
     steps:
@@ -48,32 +45,78 @@ jobs:
           echo "fileexample" > temp/file.txt
           cat temp/file.txt | tee temp/dir1/file.txt temp/dir2/file.txt temp/dir3/file.txt temp/dir1/subdir1/file.txt temp/dir2/subdir2/file.txt temp/dir3/subdir3/file.txt
 
+      - name: Create temp files outside of work dir
+        shell: bash
+        run: |
+          mkdir -p /tmp/thedir/{fulldir1,fulldir2,fulldir3}/{fullsubdir1,fullsubdir2,fullsubdir3}
+          echo "full fileexample" > /tmp/fullfile.txt
+          cat /tmp/fullfile.txt | tee /tmp/thedir/fulldir1/fullfile.txt /tmp/thedir/fulldir2/fullfile.txt /tmp/thedir/fulldir3/fullfile.txt /tmp/thedir/fulldir1/fullsubdir1/fullfile.txt /tmp/thedir/fulldir2/fullsubdir2/fullfile.txt /tmp/thedir/fulldir3/fullsubdir3/fullfile.txt
+
       - name: Put cache
         uses: ./
         with:
           action: put
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
+          aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
           aws-region: us-east-1
-          bucket: ${{ secrets.AWS_BUCKET }}
-          key: ${{ hashFiles('action.yml') }}-${{ matrix.os }}
+          verbose-logs: "true"
+          s3-prefix: "test-cache/"
+          bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
+          key: cache-test-${{ hashFiles('action.yml') }}-${{ matrix.os }}
           artifacts: |
             temp/*
+
+      - name: Put full dir cache
+        uses: ./
+        with:
+          action: put
+          aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
+          aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
+          aws-region: us-east-1
+          verbose-logs: "true"
+          s3-prefix: "test-cache/"
+          bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
+          key: cache-test-${{ hashFiles('action.yml') }}-full-${{ matrix.os }}
+          artifacts: |
+            /tmp/thedir/*
 
       - name: Remove temp folder
         shell: bash
         run: rm -rf temp
+
+      - name: Remove /tmp/thedir folder
+        shell: bash
+        run: rm -rf /tmp/thedir
 
       - name: Get cache
         id: get-cache
         uses: ./
         with:
           action: get
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
+          aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
           aws-region: us-east-1
-          bucket: ${{ secrets.AWS_BUCKET }}
-          key: ${{ hashFiles('action.yml') }}-${{ matrix.os }}
+          verbose-logs: "true"
+          s3-prefix: "test-cache/"
+          bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
+          key: cache-test-${{ hashFiles('action.yml') }}-${{ matrix.os }}
+
+      - name: Get full dir cache
+        id: get-full-cache
+        uses: ./
+        with:
+          action: get
+          aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
+          aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
+          aws-region: us-east-1
+          bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
+          verbose-logs: "true"
+          s3-prefix: "test-cache/"
+          key: cache-test-${{ hashFiles('action.yml') }}-full-${{ matrix.os }}
+
+      - name: Print folder stuff
+        shell: bash
+        run: ls -a 
 
       - name: Print get cache output
         run: echo ${{ steps.get-cache.outputs.cache-hit }}
@@ -82,12 +125,28 @@ jobs:
         shell: bash
         run: ls temp
 
+      - name: List full path cache folder
+        shell: bash
+        run: ls /tmp/thedir
+
       - name: Delete cache
         uses: ./
         with:
           action: delete
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
+          aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
           aws-region: us-east-1
-          bucket: ${{ secrets.AWS_BUCKET }}
+          s3-prefix: "test-cache/"
+          bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
           key: ${{ hashFiles('action.yml') }}-${{ matrix.os }}
+
+      - name: Delete full dir cache
+        uses: ./
+        with:
+          action: delete
+          aws-access-key-id: ${{ secrets.S3_CACHE_BUCKET_KEY }}
+          aws-secret-access-key: ${{ secrets.S3_CACHE_BUCKET_SECRET }}
+          aws-region: us-east-1
+          s3-prefix: "test-cache/"
+          bucket: ${{ secrets.S3_CACHE_BUCKET_NAME }}
+          key: ${{ hashFiles('action.yml') }}-full-${{ matrix.os }}
