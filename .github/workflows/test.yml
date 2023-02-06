@@ -72,8 +72,9 @@ jobs:
           key: cache-test-${{ hashFiles('action.yml') }}-${{ matrix.os }}
 
       - name: Print folder stuff
+        shell: bash
         run: ls -a 
-        
+
       - name: Print get cache output
         run: echo ${{ steps.get-cache.outputs.cache-hit }}
 

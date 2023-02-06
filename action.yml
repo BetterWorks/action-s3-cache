@@ -51,5 +51,5 @@ runs:
 
     - id: cache-hit 
       run: |
-        echo "hit=$($GITHUB_ACTION_PATH/check-cache-hit.sh ${{ inputs.key }})" >> $GITHUB_OUTPUT
+        echo "hit=$($GITHUB_ACTION_PATH/check-cache-hit.sh ${{ inputs.key }}.zip)" >> $GITHUB_OUTPUT
       shell: bash

@@ -51,7 +51,7 @@ func Zip(filename string, artifacts []string) error {
 				defer file.Close()
 
 				_, err = io.Copy(writter, file)
-				log.Printf("writing file filepath: %s", path)
+				log.Printf("reading file filepath: %s", path)
 
 				return err
 			})
@@ -91,6 +91,7 @@ func Unzip(filename string) error {
 		if _, err = io.Copy(outFile, currentFile); err != nil {
 			return err
 		}
+		log.Printf("writing file filepath: %s", file.Name)
 
 		outFile.Close()
 		currentFile.Close()
