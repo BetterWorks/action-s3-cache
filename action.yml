@@ -37,6 +37,10 @@ inputs:
     description: "The Object Prefix for s3 for folders"
     required: false
     default: ""
+  verbose-logs:
+    description: "Show all verbose logs"
+    required: false
+    default: "false"
 outputs:
   cache-hit:
     description: "Whether the cache was downloaded successfully or not, only used when the action is GET"
@@ -56,6 +60,7 @@ runs:
         S3_PREFIX: ${{ inputs.s3-prefix }}
         KEY: ${{ inputs.key }}
         ARTIFACTS: ${{ inputs.artifacts }}
+        VERBOSE: ${{ inputs.verbose-logs }}
         IS_RELATIVE_PATH: ${{ inputs.relative-path }}
         OS: ${{ runner.os }}
 

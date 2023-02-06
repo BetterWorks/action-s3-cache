@@ -6,10 +6,12 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 )
 
 // Zip - Create .zip file and add dirs and files that match glob patterns
 func Zip(filename string, artifacts []string, relativePath bool) error {
+	verbose, _ := strconv.ParseBool(os.Getenv("VERBOSE"))
 	outFile, err := os.Create(filename)
 	if err != nil {
 		return err
@@ -27,7 +29,9 @@ func Zip(filename string, artifacts []string, relativePath bool) error {
 		}
 
 		for _, match := range matches {
-			log.Printf("copying file that matched match: %s", match)
+			if verbose {
+				log.Printf("copying file that matched match: %s", match)
+			}
 			filepath.Walk(match, func(path string, info os.FileInfo, err error) error {
 				header, err := zip.FileInfoHeader(info)
 				if err != nil {
@@ -53,7 +57,9 @@ func Zip(filename string, artifacts []string, relativePath bool) error {
 				defer file.Close()
 
 				_, err = io.Copy(writter, file)
-				log.Printf("reading file filepath: %s", path)
+				if verbose {
+					log.Printf("reading file filepath: %s", path)
+				}
 
 				return err
 			})
@@ -65,6 +71,7 @@ func Zip(filename string, artifacts []string, relativePath bool) error {
 
 // Unzip - Unzip all files and directories inside .zip file
 func Unzip(filename string, relativePath bool) error {
+	verbose, _ := strconv.ParseBool(os.Getenv("VERBOSE"))
 	reader, err := zip.OpenReader(filename)
 	if err != nil {
 		return err
@@ -93,7 +100,9 @@ func Unzip(filename string, relativePath bool) error {
 		if _, err = io.Copy(outFile, currentFile); err != nil {
 			return err
 		}
-		log.Printf("writing file filepath: %s", file.Name)
+		if verbose {
+			log.Printf("writing file filepath: %s", file.Name)
+		}
 
 		outFile.Close()
 		currentFile.Close()
